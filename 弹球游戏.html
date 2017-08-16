@@ -1,0 +1,172 @@
+  <html>
+  <head>
+  <script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery
+/jquery-1.4.min.js"></script>
+  <script src="paddle.js"></script>
+  <script src="ball.js"></script>
+   <script src="Brick.js"></script>
+  <script src="Util.js"></script>
+   <script src="game.js"></script>
+    <title>REX弹球游戏</title>
+  <script type="text/javascript">
+  function restart(){
+    window.location.reload()
+  }
+  </script>
+  <style type="text/css">
+  .myCanvas{
+  border: 1px black solid;
+  }
+  </style>
+
+  </head>
+
+  <body style="background-color:#CCCCCC">
+
+
+  <div style="float:left;background-color:#E0FFFF">
+  <div style="padding-left: 30px;padding-right:30px;padding-bottom: 20px">
+    <h1 style="text-align:center">打砖块</h1>
+  <canvas id="myCanvas" width="400px" height="400px" class="myCanvas" style="background-color:#F0FFF0"></canvas>
+
+  <h5 id="status"></h5>
+  <button onclick="restart()">Restart</button>
+  </div>
+  </div>
+  <script type="text/javascript">
+
+
+  paddle = Paddle()
+  ball = Ball()
+  game = Game()
+
+  var bricks = new Array()
+  var leftKeyDown = false
+  var rightKeyDown = false
+  var gameStarted = false
+  var count = 0
+
+  for(var i=0; i<23; i++){
+      brick = Brick()
+      if(i%5==0){
+        brick.x = 50
+        brick.y += Math.floor(i/5)*30
+      } else {
+        brick.x += (i%5)*70
+        brick.y += Math.floor(i/5)*30
+      }
+      bricks.push(brick)
+    }
+
+
+
+  window.addEventListener("keydown", function(event){
+  //右箭头
+  if(event.keyCode == 39){
+  rightKeyDown = true
+  }
+  //左箭头
+  else if(event.keyCode == 37){
+    leftKeyDown = true
+  }
+  //空格 发射和暂停
+  else if(event.keyCode == 32){
+    if(ball.fired){
+      ball.pause()
+      document.getElementById("status").innerHTML = "暂停"
+    }else{
+      ball.fire()
+      gameStarted=true
+      document.getElementById("status").innerHTML = "游戏中..."
+    }
+  }
+})
+
+  window.addEventListener("keyup", function(event){
+    if(event.keyCode == 39){
+      rightKeyDown=false
+  }
+  else if(event.keyCode == 37){
+      leftKeyDown=false
+  }
+
+  })
+ 
+
+
+  function runningGame(){
+    //移动挡板
+    if(rightKeyDown){
+      paddle.moveRight()
+    }
+    if(leftKeyDown){
+      paddle.moveLeft()
+    }
+    //移动球
+    if(ball.fired){
+      if(game.collide(ball, paddle)){
+        ball.bounce()
+      }
+      ball.move()
+    } else {
+      if(!gameStarted){
+        ball.x = paddle.x+Math.floor(paddle.image.width/2)-Math.floor(ball.image.width/2)
+        ball.y = paddle.y-ball.image.height
+      }
+    }
+
+    var ifBounce = false
+    for(var i=0; i<bricks.length;i++){
+      var b = bricks[i]
+      if(b.alive){
+        if(game.collide(ball, b)){
+          b.kill()
+          count++
+          ifBounce = true
+        } 
+      }
+    }
+    if(ifBounce){
+      ball.bounce()
+    }
+    
+    updateUI()
+    }
+
+    function updateUI(){
+      game.clear()
+      for(var i=0; i<bricks.length;i++){
+        var b = bricks[i]
+        if(b.alive){
+          game.draw(b)
+        }
+      }
+      game.draw(ball)
+      game.draw(paddle)
+      game.drawScore(count)
+      if(game.checkGG(count)){
+        clearInterval(int)
+      }
+    }
+
+    var int = setInterval("runningGame()", 1000/80 )
+  </script>
+
+  <div style="float:left;padding-right:50px;background-color:#FFFACD">
+  <div style="padding-left:20px;padding-bottom: 20px">
+  <h3> 选择你的球：</h3>
+  360: <img src="images/ball.png" onclick="ball.setImage('images/ball.png')">
+  Red-Cool:<img src="images/ball4.png" onclick="ball.setImage('images/ball4.png')">周楠:<img src="images/ball2.png"onclick="ball.setImage('images/ball2.png')">
+  </div>
+  </div>
+
+    <div style="float:left;padding-right:50px;background-color:#FFCC99">
+    <div style="padding-left:20px;padding-bottom: 20px">
+    <h3> 选择你的挡板：</h3>
+  黑魂: <img src="images/paddle.png" onclick="paddle.setImage('images/paddle.png')">
+  粉红:<img src="images/paddle2.png" onclick="paddle.setImage('images/paddle2.png')">小朋友:<img src="images/paddle4.png"onclick="paddle.setImage('images/paddle4.png')">
+  </div>
+  </div>
+  </body>
+
+  </html>
