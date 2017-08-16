@@ -1,44 +1,4 @@
-   function runningGame(){
-    //移动挡板
-    if(rightKeyDown){
-      paddle.moveRight()
-    }
-    if(leftKeyDown){
-      paddle.moveLeft()
-    }
-    //移动球
-    if(ball.fired){
-      if(game.collide(ball, paddle)){
-        ball.bounce()
-      }
-      ball.move()
-    } else {
-      if(!gameStarted){
-        ball.x = paddle.x+Math.floor(paddle.image.width/2)-Math.floor(ball.image.width/2)
-        ball.y = paddle.y-ball.image.height
-      }
-    }
-
-    var ifBounce = false
-    for(var i=0; i<bricks.length;i++){
-      var b = bricks[i]
-      if(b.alive){
-        if(game.collide(ball, b)){
-          b.kill()
-          count++
-          ifBounce = true
-        } 
-      }
-    }
-    if(ifBounce){
-      ball.bounce()
-    }
-    
-    updateUI()
-    }
-
-
-   function updateUI(){
+function updateUI(){
       game.clear()
       for(var i=0; i<bricks.length;i++){
         var b = bricks[i]
@@ -58,9 +18,7 @@
   ball = Ball()
   game = Game()
 
-  var bricks = new Array()
-  var leftKeyDown = false
-  var rightKeyDown = false
+  var bricks = []
   var gameStarted = false
   var count = 0
 
@@ -76,39 +34,58 @@
       bricks.push(brick)
     }
 
-  window.addEventListener("keydown", function(event){
-  //右箭头
-  if(event.keyCode == 39){
-  rightKeyDown = true
-  }
-  //左箭头
-  else if(event.keyCode == 37){
-    leftKeyDown = true
-  }
-  //空格 发射和暂停
-  else if(event.keyCode == 32){
-    if(ball.fired){
-      ball.pause()
-      document.getElementById("status").innerHTML = "暂停"
-    }else{
-      ball.fire()
-      gameStarted=true
-      document.getElementById("status").innerHTML = "游戏中..."
+//注册左箭头
+game.registerKey(37, function(){
+  paddle.moveLeft()
+})
+//注册右箭头
+game.registerKey(39, function(){
+  paddle.moveRight()
+})
+//注册空格键
+game.registerKey(32, function(){
+  if(ball.fired){
+    ball.pause()
+    document.getElementById("status").innerHTML = "暂停"
+  }else{
+    ball.fire()
+    gameStarted=true
+    document.getElementById("status").innerHTML = "游戏中..."
+   }
+ })
+
+game.update = function(){
+  //移动球
+  if(ball.fired){
+    if(game.collide(ball, paddle)){
+      ball.bounce()
+    }
+    ball.move()
+  } else {
+    if(!gameStarted){
+      ball.x = paddle.x+Math.floor(paddle.image.width/2)-Math.floor(ball.image.width/2)
+      ball.y = paddle.y-ball.image.height
     }
   }
-})
 
-  window.addEventListener("keyup", function(event){
-    if(event.keyCode == 39){
-      rightKeyDown=false
+  var ifBounce = false
+  for(var i=0; i<bricks.length;i++){
+    var b = bricks[i]
+    if(b.alive){
+      if(game.collide(ball, b)){
+        b.kill()
+        count++
+        ifBounce = true
+      }
+    }
   }
-  else if(event.keyCode == 37){
-      leftKeyDown=false
+  if(ifBounce){
+    ball.bounce()
   }
 
-  })
- 
+  updateUI()
+}
 
-  var int = setInterval("runningGame()", 1000/80 )
-    
-   
+var int = setInterval(function(){
+  game.runGame()
+}, 1000/80 )
