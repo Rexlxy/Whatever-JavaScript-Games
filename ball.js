@@ -1,10 +1,10 @@
 
 Ball = function(){
-	var image = imageFromPath('images/ball.png')
+	var image = imageFromPath("images/ball.png")
     var o = {
    	  image:image,
       x: 130,
-      y:200,
+      y: 100,
       speedX: 2,
       speedY: 2, 
       fired: false
@@ -29,8 +29,12 @@ Ball = function(){
       o.y += o.speedY
     }
 
-    o.bounce = function(){
+    o.bounceVertical = function(){ 
     	o.speedY = -o.speedY
+    }
+
+    o.bounceHorizontal = function(){
+      o.speedX = -o.speedX
     }
 
     o.setImage = function(newImg){

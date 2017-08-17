@@ -11,8 +11,8 @@ var Brick = function(){
 	}
 
 	o.setImage = function(newImg){
-      o.image = imageFromPath(newImg)
-    }
+		o.image = imageFromPath(newImg)
+	}
 
 	return o
 }

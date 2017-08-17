@@ -1,55 +1,58 @@
   <html>
   <head>
-  <script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery
-/jquery-1.4.min.js"></script>
-  <script src="paddle.js"></script>
-  <script src="ball.js"></script>
-   <script src="Brick.js"></script>
-  <script src="Util.js"></script>
-   <script src="game.js"></script>
+    <script src="paddle.js"></script>
+    <script src="ball.js"></script>
+    <script src="Brick.js"></script>
+    <script src="Util.js"></script>
+    <script src="game.js"></script>
     <title>REX弹球游戏</title>
-  <script type="text/javascript">
-  function restart(){
-    window.location.reload()
-  }
-  </script>
-  <style type="text/css">
-  .myCanvas{
-  border: 1px black solid;
-  }
-  </style>
+    <script type="text/javascript">
+      function restart(){
+        window.location.reload()
+      }
+    </script>
+    <style type="text/css">
+      .myCanvas{
+        border: 1px black solid;
+      }
+    </style>
 
   </head>
 
   <body style="background-color:#CCCCCC">
 
 
-  <div style="float:left;background-color:#E0FFFF">
-  <div style="padding-left: 30px;padding-right:30px;padding-bottom: 20px">
-    <h1 style="text-align:center">打砖块</h1>
-  <canvas id="myCanvas" width="400px" height="400px" class="myCanvas" style="background-color:#F0FFF0"></canvas>
+    <div style="float:left;background-color:#E0FFFF">
+      <div style="padding-left: 30px;padding-right:30px;padding-bottom: 20px">
+        <h1 style="text-align:center">打砖块</h1>
+          <h5 style="text-align:center;color:grey" id="status">按'f'键发射</h5>
+        <canvas id="myCanvas" width="400px" height="400px" class="myCanvas" style="background-color:#F0FFF0"></canvas>
+        <h5>左右键或者'a''d'键控制挡板左右移动</h5>
+        <button onclick="restart()">Restart</button>
+      </div>
+    </div>
+    <script src="main.js"></script>
 
-  <h5 id="status"></h5>
-  <button onclick="restart()">Restart</button>
-  </div>
-  </div>
-   <script src="main.js"></script>
-
-  <div style="float:left;padding-right:50px;background-color:#FFFACD">
-  <div style="padding-left:20px;padding-bottom: 20px">
-  <h3> 选择你的球：</h3>
-  360: <img src="images/ball.png" onclick="ball.setImage('images/ball.png')">
-  Red-Cool:<img src="images/ball4.png" onclick="ball.setImage('images/ball4.png')">周楠:<img src="images/ball2.png"onclick="ball.setImage('images/ball2.png')">
-  </div>
-  </div>
+    <div style="float:left;padding-right:50px;background-color:#FFFACD">
+      <div style="padding-left:20px;padding-bottom: 20px">
+        <h3> 选择你的球：</h3>
+        小球: <img src="images/ball.png" onclick="ball.setImage('images/ball.png')">
+        红色大球:<img src="images/ball4.png" onclick="ball.setImage('images/ball4.png')">
+        周楠:<img src="images/ball2.png"onclick="ball.setImage('images/ball2.png')">
+      </div>
+    </div>
 
     <div style="float:left;padding-right:50px;background-color:#FFCC99">
-    <div style="padding-left:20px;padding-bottom: 20px">
-    <h3> 选择你的挡板：</h3>
-  黑魂: <img src="images/paddle.png" onclick="paddle.setImage('images/paddle.png')">
-  粉红:<img src="images/paddle2.png" onclick="paddle.setImage('images/paddle2.png')">小朋友:<img src="images/paddle4.png"onclick="paddle.setImage('images/paddle4.png')">
-  </div>
-  </div>
+      <div style="padding-left:20px;padding-bottom: 20px">
+        <h3> 选择你的挡板：</h3>
+        黑魂: 
+        <img src="images/paddle.png" onclick="paddle.setImage('images/paddle.png')">
+        粉红:
+        <img src="images/paddle2.png" onclick="paddle.setImage('images/paddle2.png')">
+        小朋友:
+        <img src="images/paddle4.png"onclick="paddle.setImage('images/paddle4.png')">
+      </div>
+    </div>
   </body>
 
   </html>
