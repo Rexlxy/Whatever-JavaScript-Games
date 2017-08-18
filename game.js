@@ -10,13 +10,12 @@ var Game = function(fps, imageSrc, runCallback) {
   }
   g.canvas = document.getElementById("myCanvas")
   g.context = g.canvas.getContext('2d')
-
   g.getImage = function(imageKey) {
     return g.images[imageKey]
   }
-
-  g.clear = function() {
-    g.context.clearRect(0, 0, 400, 400)
+  //draw游戏中组件
+  g.drawComponent = function(img) {
+    g.context.drawImage(img.image, img.x, img.y)
   }
 
   window.addEventListener('keydown', function(event) {
@@ -31,26 +30,6 @@ var Game = function(fps, imageSrc, runCallback) {
     g.keyFunctions[keyCode] = callback
   }
 
-  //draw text
-  g.drawText = function(text, x, y, color, font) {
-    g.context.font = font
-    g.context.fillStyle = color
-    g.context.fillText(text, x, y)
-  }
-
-  g.drawColorLayer = function() {
-    g.context.fillStyle = "rgba(255,165,0,0.8)"
-    g.context.fillRect(0, 0, 400, 400)
-  }
-
-  g.draw = function(img) {
-    g.context.drawImage(img.image, img.x, img.y)
-  }
-
-  g.drawScore = function() {
-    g.drawText("Score:", 10, 380, 'blue', 'bold 16px arial')
-    g.drawText(g.score, 60, 380, 'blue', 'bold 16px arial')
-  }
 
   g.collide = function(object1, object2) {
     var result = checkBallIntersectB(object1, object2)
@@ -85,7 +64,7 @@ var Game = function(fps, imageSrc, runCallback) {
       g.images[imageKey] = img
       loadCount++
       if (loadCount == imageKeys.length) {
-        g.run()
+        g.start()
       }
 
     }
@@ -110,10 +89,9 @@ var Game = function(fps, imageSrc, runCallback) {
         g.keyFunctions[keyCode]()
       }
     }
-    //更新球的位置
-    g.update()
-    g.clear()
-    g.drawAll()
+    //让scene更新球的位置
+    g.scene.update()
+    g.scene.draw()
 
     if (g.gameOver) {
       return
@@ -123,12 +101,17 @@ var Game = function(fps, imageSrc, runCallback) {
     }, 1000 / fps)
   }
 
-  g.run = function() {
-    runCallback()
-    // 开始运行程序
+  //注入scene，开始run
+  g.runWithScene = function(scene){
+    g.scene = scene
     setTimeout(function() {
       runGame()
     }, 1000 / fps)
+  }
+
+ //callback -> 创建scene -> 调用runWithScene（）
+  g.start = function(){
+    runCallback()
   }
   return g
 }
