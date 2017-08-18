@@ -4,105 +4,170 @@
 	<title></title>
 </head>
 <body>
-	<canvas style="background-color:grey" id="myCanvas" width = 400px height = 600px></canvas>
+	<div>
+		<h3>消灭星星-屌丝版</h3>
+		<canvas style="background-color:grey" id="myCanvas" width = 400px height = 400px></canvas>
 
-	<script type="text/javascript">
+		<script type="text/javascript">
 
-	var Scene = function(blocks){
-		var s = {
-		}
-		var block = Block()
-		s.canvas = document.getElementById("myCanvas")
-		s.context = s.canvas.getContext('2d')
-		
-		s.draw = function(image){
-			s.context.fillStyle = image.color
-			s.context.fillRect(image.x, image.y, image.edge, image.edge)
-			s.context.strokeStyle = "black"
-			s.context.strokeRect(image.x, image.y+1, image.edge-1, image.edge-1)
-		}
-
-		s.drawPanel = function(){
-			for(var i=0;i<blocks.length;i++){
-				for(var j=0; j<blocks[i].length; j++){
-					if(blocks[i][j].alive){
-						s.draw(blocks[i][j])
-					}
-		}
-	}
-		}
-
-  	 s.kill = function(block){
-    	s.context.fillStyle = "grey"
-			s.context.fillRect(block.x, block.y, block.edge, block.edge+1)
-    }
-		return s
-	}
-
-	var Block = function(inColor){
-		var o = {
-			x:0,
-			y:200,
-			edge:50,
-			alive:true,
-		}
-
-		o.contains = function(coordinate){
-			if(coordinate.x>=o.x && coordinate.x<=o.x+o.edge){
-				if(coordinate.y>= o.y && coordinate.y <= o.y+o.edge){
-					return true
+			var Scene = function(blocks){
+				var s = {
 				}
+				var block = Block()
+				s.blocks = blocks
+				s.canvas = document.getElementById("myCanvas")
+				s.context = s.canvas.getContext('2d')
+
+				s.draw = function(image){
+					s.context.fillStyle = image.color
+					s.context.fillRect(image.x, image.y, image.edge, image.edge)
+					s.context.strokeStyle = "black"
+					s.context.strokeRect(image.x, image.y+1, image.edge-1, image.edge-1)
+				}
+
+				s.drawPanel = function(){
+					for(var i=0;i<s.blocks.length;i++){
+						for(var j=0; j<s.blocks[i].length; j++){
+							if(s.blocks[i][j].alive){
+								s.draw(s.blocks[i][j])
+							}
+						}
+					}
+				}
+
+				s.hasSameNeighbour = function(i, j){
+					var color = s.blocks[i][j].color
+					if(i!=0&&s.blocks[i-1][j].alive&&s.blocks[i-1][j].color == color){
+						return true
+					}
+					if(i!=s.blocks.length-1&&s.blocks[i+1][j].alive&&s.blocks[i+1][j].color == color){
+						return true
+					}
+					if(j!=0&&s.blocks[i][j-1].alive&&s.blocks[i][j-1].color == color){
+						return true
+					}
+					if(j!=s.blocks.length-1&&s.blocks[i][j+1].alive&&s.blocks[i][j+1].color == color){
+						return true
+					}
+					return false
+
+				}
+				s.checkGravity = function(){
+					for(var j=s.blocks[0].length-2; j>0; j--){
+						for( var i=0; i<s.blocks.length; i++){
+								if(s.blocks[i][j].alive && !s.blocks[i][j+1].alive){
+									s.blocks[i][j+1] = Block(s.blocks[i][j].color)
+									s.blocks[i][j].alive = false
+								}
+						
+						}
+					}
+				}
+				s.exploreFromBlock = function(i, j){
+					var color = s.blocks[i][j].color
+					s.blocks[i][j].alive = false
+					console.log(i, j)
+					if(i!=0 && s.blocks[i-1][j].color == color && s.blocks[i-1][j].alive){
+						s.blocks[i-1][j].alive = false
+						s.exploreFromBlock(i-1, j)
+					}
+					if(j!=0 && s.blocks[i][j-1].color == color && s.blocks[i][j-1].alive){
+						s.blocks[i][j-1].alive = false
+						s.exploreFromBlock(i, j-1)
+					}
+					if(i!=s.blocks.length-1 && s.blocks[i+1][j].color == color && s.blocks[i+1][j].alive){
+						s.blocks[i+1][j].alive = false
+						s.exploreFromBlock(i+1, j)
+					}
+					if(j!=s.blocks.length-1 && s.blocks[i][j+1].color == color && s.blocks[i][j+1].alive){
+						s.blocks[i][j+1].alive = false
+						s.exploreFromBlock(i, j+1)
+					}
+					return
+				}
+
+				s.update = function(){
+					s.context.fillStyle = "grey"
+					s.context.fillRect(0, 0, 400, 400)
+					s.drawPanel()
+				}
+
+				s.kill = function(block){
+					s.context.fillStyle = "grey"
+					s.context.fillRect(block.x, block.y, block.edge, block.edge+1)
+				}
+				return s
 			}
-			return false
-		}
-		o.color = inColor
-		return o
-	}
+
+			var Block = function(inColor){
+				var o = {
+					x:0,
+					y:0,
+					edge:50,
+					alive:true,
+				}
+
+				o.contains = function(coordinate){
+					if(coordinate.x>=o.x && coordinate.x<=o.x+o.edge){
+						if(coordinate.y>= o.y && coordinate.y <= o.y+o.edge){
+							return true
+						}
+					}
+					return false
+				}
+				o.color = inColor
+				return o
+			}
 
 
 
-	var colors = ["blue", "red", "yellow", "green"]
-var blocks = []
-	for(var i=0; i<8; i++){
-		var list = []
-		for(var j=0; j<8; j++){
-			var block = new Block(colors[parseInt(Math.random()*4)])
-			block.x += i*50
-			block.y += j*50 
-			list.push(block)
-		}
-		blocks.push(list)
-	}
+			var colors = ["blue", "red", "yellow", "green"]
+			var blocks = []
+			for(var i=0; i<8; i++){
+				var list = []
+				for(var j=0; j<8; j++){
+					var block = new Block(colors[parseInt(Math.random()*4)])
+					block.x += i*50
+					block.y += j*50 
+					list.push(block)
+				}
+				blocks.push(list)
+			}
 
-		var scene = Scene(blocks)
-	scene.drawPanel()
+			var scene = Scene(blocks)
+			scene.drawPanel()
 
-    function getPointOnCanvas(canvas, x, y) {
+			function getPointOnCanvas(canvas, x, y) {
 
-    	var bbox =canvas.getBoundingClientRect();
+				var bbox =canvas.getBoundingClientRect();
 
-    	return { x: x- bbox.left *(canvas.width / bbox.width),
+				return { x: x- bbox.left *(canvas.width / bbox.width),
 
-    		y:y - bbox.top  * (canvas.height / bbox.height)
+					y:y - bbox.top  * (canvas.height / bbox.height)
 
-    	};
+				};
 
-    }
+			}
 
-    var myCanvas = document.getElementById("myCanvas")
-    myCanvas.addEventListener('mousedown', function(event){
-    	var coordinate = getPointOnCanvas(myCanvas, event.clientX, event.clientY )
+			var myCanvas = document.getElementById("myCanvas")
+			myCanvas.addEventListener('mousedown', function(event){
+				var coordinate = getPointOnCanvas(myCanvas, event.clientX, event.clientY )
 
-	for(var i=0;i<blocks.length;i++){
-		for(var j=0; j<blocks[i].length; j++){
-    		if(blocks[i][j].contains(coordinate)){
-    			scene.kill(blocks[i][j])
-    		}
-    	}
-    }
-    })
+				for(var i=0;i<scene.blocks.length;i++){
+					for(var j=0; j<scene.blocks[i].length; j++){
+						if(scene.blocks[i][j].contains(coordinate)&&scene.blocks[i][j].alive){
+							if(scene.hasSameNeighbour(i,j)){
+							scene.exploreFromBlock(i,j)
+						}
+						}
+					}
+				}
+				scene.checkGravity()
+				scene.update()
+			})
 
-    
-	</script>
+
+		</script>
+	</div>
 </body>
 </html>
