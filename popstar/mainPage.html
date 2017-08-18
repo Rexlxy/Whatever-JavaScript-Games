@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<canvas style="background-color:grey" id="myCanvas" width = 400px height = 600px></canvas>
+
+	<script type="text/javascript">
+
+	var Scene = function(blocks){
+		var s = {
+		}
+		var block = Block()
+		s.canvas = document.getElementById("myCanvas")
+		s.context = s.canvas.getContext('2d')
+		
+		s.draw = function(image){
+			s.context.fillStyle = image.color
+			s.context.fillRect(image.x, image.y, image.edge, image.edge)
+			s.context.strokeStyle = "black"
+			s.context.strokeRect(image.x, image.y+1, image.edge-1, image.edge-1)
+		}
+
+		s.drawPanel = function(){
+			for(var i=0;i<blocks.length;i++){
+				for(var j=0; j<blocks[i].length; j++){
+					if(blocks[i][j].alive){
+						s.draw(blocks[i][j])
+					}
+		}
+	}
+		}
+
+  	 s.kill = function(block){
+    	s.context.fillStyle = "grey"
+			s.context.fillRect(block.x, block.y, block.edge, block.edge+1)
+    }
+		return s
+	}
+
+	var Block = function(inColor){
+		var o = {
+			x:0,
+			y:200,
+			edge:50,
+			alive:true,
+		}
+
+		o.contains = function(coordinate){
+			if(coordinate.x>=o.x && coordinate.x<=o.x+o.edge){
+				if(coordinate.y>= o.y && coordinate.y <= o.y+o.edge){
+					return true
+				}
+			}
+			return false
+		}
+		o.color = inColor
+		return o
+	}
+
+
+
+	var colors = ["blue", "red", "yellow", "green"]
+var blocks = []
+	for(var i=0; i<8; i++){
+		var list = []
+		for(var j=0; j<8; j++){
+			var block = new Block(colors[parseInt(Math.random()*4)])
+			block.x += i*50
+			block.y += j*50 
+			list.push(block)
+		}
+		blocks.push(list)
+	}
+
+		var scene = Scene(blocks)
+	scene.drawPanel()
+
+    function getPointOnCanvas(canvas, x, y) {
+
+    	var bbox =canvas.getBoundingClientRect();
+
+    	return { x: x- bbox.left *(canvas.width / bbox.width),
+
+    		y:y - bbox.top  * (canvas.height / bbox.height)
+
+    	};
+
+    }
+
+    var myCanvas = document.getElementById("myCanvas")
+    myCanvas.addEventListener('mousedown', function(event){
+    	var coordinate = getPointOnCanvas(myCanvas, event.clientX, event.clientY )
+
+	for(var i=0;i<blocks.length;i++){
+		for(var j=0; j<blocks[i].length; j++){
+    		if(blocks[i][j].contains(coordinate)){
+    			scene.kill(blocks[i][j])
+    		}
+    	}
+    }
+    })
+
+    
+	</script>
+</body>
+</html>
