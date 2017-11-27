@@ -82,6 +82,13 @@ var MainScene = function(game){
         }
       }
     }
+
+    if(ball.y > 350) {
+      game.gameOver = true
+      var end = SceneEnd(game)
+      game.replaceScene(end)
+      game.scene.draw()
+    }
   }
 
 
@@ -92,17 +99,17 @@ var MainScene = function(game){
     if (document.getElementById("godMode").checked) {
       godMode = true
     }
-    //球掉下去，游戏结束
-    if (ball.y > 350 && !godMode) {
-      document.getElementById("status").innerHTML = "呵呵，垃圾"
-      s.drawColorLayer()
-      //Game over
-      s.drawText('Game Over', 10, 205, '#FF6A6A', 'bold 70px arial')
-      //分数
-      s.drawText("Score:", 160, 280, 'FF6A6A', 'bold 20px arial')
-      s.drawText(game.score, 230, 280, 'FF6A6A', 'bold 20px arial')
-      game.gameOver = true
-    }
+    // //球掉下去，游戏结束
+    // if (ball.y > 350 && !godMode) {
+    //   document.getElementById("status").innerHTML = "呵呵，垃圾"
+    //   s.drawColorLayer()
+    //   //Game over
+    //   s.drawText('Game Over', 10, 205, '#FF6A6A', 'bold 70px arial')
+    //   //分数
+    //   s.drawText("Score:", 160, 280, 'FF6A6A', 'bold 20px arial')
+    //   s.drawText(game.score, 230, 280, 'FF6A6A', 'bold 20px arial')
+    //   game.gameOver = true
+    // }
     //砖块打光，过关
     if (game.count == bricks.length) {
       document.getElementById("status").innerHTML = "You win"
@@ -118,7 +125,7 @@ var MainScene = function(game){
   s.clear = function() {
     s.context.clearRect(0, 0, 400, 400)
   }
-  //在特定坐标画上蚊子
+  //在特定坐标画上文字
   s.drawText = function(text, x, y, color, font) {
     s.context.font = font
     s.context.fillStyle = color

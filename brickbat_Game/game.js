@@ -109,6 +109,9 @@ var Game = function(fps, imageSrc, runCallback) {
     }, 1000 / fps)
   }
 
+  g.replaceScene = function(scene) {
+    g.scene = scene
+  }
  //callback -> 创建scene -> 调用runWithScene（）
   g.start = function(){
     runCallback()

@@ -1,0 +1,98 @@
+<html>
+<head>
+
+  <title>飞机</title>
+  <script type="text/javascript">
+    function restart(){
+      window.location.reload()
+    }
+  </script>
+  <style type="text/css">
+    .myCanvas{
+      border: 2px black solid;
+    }
+  </style>
+
+</head>
+
+<body style="background-color:#CCCCCC">
+  <div style="float:left;background-color:#E0FFFF">
+    <div style="padding-left: 30px;padding-right:30px;padding-bottom: 20px">
+      <canvas id="myCanvas" width="400px" height="600px" class="myCanvas" style="background-color:#F0FFF0"></canvas>
+      <button onclick="restart()">Restart</button>
+      <span style="padding-left:50px"><input type="checkbox" id="godMode">无敌模式</input></span>
+    </div>
+  </div>
+</body>
+
+<script>
+
+var plane  = function() {
+    var p = {
+        imageSrc: "plane.png",
+    }
+
+    p.x = 50
+    p.y = 500
+
+    p.width = 50
+    p.height = 50
+    p.moveLeft = function() {
+        p.x -= 1
+    }
+
+    p.moveRight = function() {
+        p.x += 1
+    }
+    return p
+}
+
+var drawComponent = function(c) {
+    let image = new Image()
+    image.onload = function() {
+        context.drawImage(this, c.x, c.y, c.width, c.height)
+    }
+    image.src = c.imageSrc
+}
+
+var canvas = document.getElementById("myCanvas")
+var context = canvas.getContext('2d')
+var p = plane()
+var toRight = true
+drawComponent(p)
+
+var run = function(){
+    if(p.x > 355) {
+        toRight = false
+    }
+
+    if(p.x < 0) {
+        toRight = true
+    }
+
+    if(toRight) {
+        p.moveRight()
+    } else {
+        p.moveLeft()
+    }
+
+    update()
+    console.log("running...")
+}
+
+setInterval(function() {
+  run()
+}, 1)
+
+var update = function(){
+    context.clearRect(0,0,400, 600)
+    drawComponent(p)
+}
+
+
+
+
+
+
+</script>
+</html>
